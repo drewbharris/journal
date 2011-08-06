@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>{% block title %}{% endblock %}</title>
+<style type="text/css">
+*
+{
+	font-family:helvetica, arial;
+}
+#center
+{
+	width:700px;
+	margin:0 auto;
+	height:100%;
+}
+#heading
+{
+	padding-bottom:10px;
+	border-bottom:1px black dashed;
+	margin-bottom:20px;
+}
+
+</style>
+</head>
+<body>
+<div id="center">
+	<div id="heading">
+		<div style="font-size:3em;">
+			journal
+		</div>
+		<a href="/login">log in</a>
+		<a href="/post">post</a>
+		<a href="/about">about</a>
+	</div>
+<div style="font-size:2em;margin-bottom:5px;">
+{% block heading %}{% endblock %}
+<div>
+
+{% block content %}{% endblock %}
+
+
+</div>
+</body>
+</html>

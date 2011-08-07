@@ -101,6 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfResponseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
@@ -111,7 +112,8 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-	'/home/dbharris/webapps/django2/journal/templates')
+	'/home/dbharris/webapps/django2/journal/templates',
+	'/home/dbharris/webapps/django2/journal/templates/registration')
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -124,6 +126,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+	'main'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -148,4 +151,15 @@ LOGGING = {
         },
     }
 }
+
+
+
+EMAIL_HOST = 'smtp.webfaction.com'
+EMAIL_HOST_USER = 'dbharris_mail'
+EMAIL_HOST_PASSWORD = 'grmny54grmny'
+DEFAULT_FROM_EMAIL = 'contact@django2.distorteddisco.com'
+SERVER_EMAIL = 'contact@django2.distorteddisco.com'
+
+
+AUTH_PROFILE_MODULE = 'main.UserProfile'
 

@@ -8,7 +8,9 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'journal.views.home', name='home'),
     # url(r'^journal/', include('journal.foo.urls')),
-
+    (r'^$', 'main.views.index'),
+    (r'^post/$', 'main.views.post'),
+    (r'^register/$', 'main.views.register'),
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

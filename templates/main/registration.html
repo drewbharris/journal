@@ -1,29 +1,52 @@
 {% extends "base.html" %}
 
-{% block title %}Create an account{% endblock %}
+{% block title %}create an account{% endblock %}
+{% block heading %}create an account{% endblock %}
 
 {% block content %}
-      <h1>Create an account</h1>
-      <form action="." method="post">{% csrf_token %}
-        {% if form.error_dict %}
-          <p class="error">Please correct the errors below.</p>
-        {% endif %}
 
+<form action="" method="post">
+        <div class="field">
+        
+        <div class="reg_field"><label for="username">username:</label></div>
+        {{ form.username }}
+        
         {% if form.username.errors %}
-          {{ form.username.html_error_list }}
+            {% for error in form.username.errors %}
+                <span class="error_msg">
+                {{ error }}<br>
+                </span>
+            
+            {% endfor %}
         {% endif %}
-        <label for="id_username">Username:</label> {{ form.username }}
-
+        </div>
+        <div class="field">
+        
+        <div class="reg_field"><label for="password1">password:</label></div>
+        {{ form.password1 }}
+        
         {% if form.password1.errors %}
-          {{ form.password1.html_error_list }}
+            {% for error in form.password1.errors %}
+                <span class="error_msg">
+                {{ error }}<br>
+                </span>
+            
+            {% endfor %}
         {% endif %}
-        <label for="id_password1">Password: {{ form.password1 }}
-
+        </div>
+        <div class="field">
+        <div class="reg_field"><label for="password2">re-enter your password:</label></div>
+        {{ form.password2 }}
+        
         {% if form.password2.errors %}
-          {{ form.password2.html_error_list }}
+            {% for error in form.password2.errors %}
+                <span class="error_msg">
+                {{ error }}<br>
+                </span>
+            
+            {% endfor %}
         {% endif %}
-        <label for="id_password2">Password (again): {{ form.password2 }}
-
-        <input type="submit" value="Create the account" />
-      </label>
+        </div>
+        <input type="submit" value="create">
+</form>
 {% endblock %}

@@ -2,6 +2,28 @@
 <head>
 <title>{% block title %}{% endblock %}</title>
 <style type="text/css">
+a:link
+{
+	color:red;
+	text-decoration:none;
+}
+a:visited
+{
+	color:red;
+	text-decoration:none;
+}
+a:active
+{
+	color:red;
+	text-decoration:none;
+}
+a:hover
+{
+	background-color:red;
+	color:white;
+	text-decoration:none;
+}
+
 *
 {
 	font-family:helvetica, arial;
@@ -19,6 +41,17 @@
 	margin-bottom:20px;
 }
 
+.error_msg
+{
+       color:red; 
+}
+.reg_field
+{
+        float:left;
+        width:180px;
+}
+        
+
 </style>
 </head>
 <body>
@@ -27,21 +60,19 @@
 		<div style="font-size:3em;">
 			journal
 		</div>
-		<a href="/login">log in</a>
-		<a href="/post">post</a>
-		<a href="/about">about</a>
-		{% if not user.is_authenticated %}
-		<a href="/accounts/login/?next=/">login</a>
-		<a href="/accounts/register/">register</a>
-		{% endif %}
-		
 		{% if user.is_authenticated %}
-		<a href="/accounts/logout/?next=/">logout</a>
+		<a href="/post">post</a>
+		<a href="/logout/">logout</a>
+		<a href="/about">about</a>
+		{% else %}
+		<a href="/login/">login</a>
+		<a href="/register/">register</a>
+		<a href="/about">about</a>
 		{% endif %}
 	</div>
 <div style="font-size:2em;margin-bottom:5px;">
 {% block heading %}{% endblock %}
-<div>
+</div>
 
 {% block content %}{% endblock %}
 

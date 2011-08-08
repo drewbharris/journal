@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}logout{% endblock %}
+
+{% block heading %}logout{% endblock %}
+
+{% block content %}
+{% if message %}
+                {{ message }}<br>
+{% endif %}
+{% if error %}
+                <span style="color:red">error: </span>{{ error }}<br>
+{% endif %}
+
+{% endblock %}

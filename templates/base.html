@@ -51,20 +51,45 @@ a:hover
         width:180px;
 }
         
+.post_body
+{
+	width:650;
+	margin:0 auto;
+	font-size:15px;
+	margin-bottom:10px;
+	margin-top:10px;
+	
+}
 
+.post_user
+{
+}
+
+.post_date
+{
+}
+
+.commentlink
+{
+	text-align:right;
+}
 </style>
 </head>
 <body>
 <div id="center">
 	<div id="heading">
 		<div style="font-size:3em;">
-			journal
+			journal 
+			{% if user.is_authenticated %}
+			<span style="font-size:0.6em;">[{{user.username}}]</span>
+			{% endif %}
 		</div>
+		<a href="/">all posts</a>
 		{% if user.is_authenticated %}
 		<a href="/you">you</a>
 		<a href="/post">post</a>
 		<a href="/logout/">logout</a>
-		<a href="/you/change_password">change password</a>
+		<!--<a href="/you/change_password">change password</a>-->
 		<a href="/about">about</a>
 		{% else %}
 		<a href="/login/">login</a>

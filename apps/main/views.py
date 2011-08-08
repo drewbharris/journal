@@ -1,24 +1,57 @@
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, RequestContext, loader
-from main.models import Test
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm, SetPasswordForm
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django import forms
 from django.shortcuts import render_to_response
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.core.urlresolvers import reverse
+
+from main.models import *
 
 def index(request):
-    t = loader.get_template('main/index.html')
-    c = RequestContext(request, {})
-    return HttpResponse(t.render(c))
+	posts = Post.objects.all().order_by("-created").filter(private=False)
+	paginator = Paginator(posts, 10)
+
+	try: 
+		page = int(request.GET.get("page", '1'))
+	except ValueError: 
+		page = 1
+
+	try:
+		posts = paginator.page(page)
+	except (InvalidPage, EmptyPage):
+		posts = paginator.page(paginator.num_pages)
+
+	t = loader.get_template('main/index.html')
+	c = RequestContext(request, {'posts':posts})
+	return HttpResponse(t.render(c))
 
 def post(request):
-    t = loader.get_template('main/post.html')
-    c = RequestContext(request, {})
-    return HttpResponse(t.render(c))
-    
+	if request.method == 'POST':
+		username = request.user.username
+		try:
+			anonymous = request.POST['anonymous']
+		except:
+			anonymous = False
+		try:
+			private = request.POST['private']
+		except:
+			private = False
+		body = request.POST['body']
+		#network = request.POST['network']
+		network = 'main'
+		if not body:
+			return render_to_response('main/post.html', {'error': 'please enter a post'}, context_instance=RequestContext(request))
+		else:
+			post = Post(username=username, anonymous=anonymous, private=private, body=body, network=network)
+			post.save()
+			return HttpResponseRedirect("/")
+	else:
+		return render_to_response('main/post.html', {}, context_instance=RequestContext(request))
+
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -46,6 +79,9 @@ def login(request):
         return render_to_response('main/login.html', {}, context_instance=RequestContext(request))
         
 def profile(request):
+    return render_to_response("main/profile.html", {}, context_instance=RequestContext(request))
+    
+def update_profile(request):
     return render_to_response("main/profile.html", {}, context_instance=RequestContext(request))
     
 def logout(request):

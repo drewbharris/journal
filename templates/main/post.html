@@ -6,6 +6,47 @@
 {% block heading %}create post{% endblock %}
 
 {% block content %}
-form
+{% if user.is_authenticated %}
+	{% if error %}
+	{{ error }}
+	{% endif %}
+	<form action="" method="post">
+		<!-- FOR NETWORK IMPLEMENTATION
+		<div class="field">
+        <div class="reg_field">
+        <label for="network">network:</label>
+        </div>
+        <select name="network">
+		<option value="main" selected="selected">main</option>
+		<option value="music">music</option>
+		<option value="anonymous">anonymous</option>
+		</select>
+		</div>-->
+
+        <div class="field">
+        <div class="reg_field">
+        <label for="private">private:</label>
+        </div>
+        <input type="checkbox" name="private"></input>
+		</div>
+
+		<div class="field">
+        <div class="reg_field">
+        <label for="anonymous">anonymous:</label>
+        </div>
+        <input type="checkbox" name="anonymous"></input>
+        </div>
+
+		<div class="field">
+        <div class="reg_field">
+        <label for="body">post:</label>
+        </div>
+        <textarea name="body"></textarea>
+        </div>
+
+        <input type="submit" value="submit">
+{% else %}
+	Please log in before posting.
+{% endif %}
 {% endblock %}
 

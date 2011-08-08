@@ -5,4 +5,42 @@
 
 {% block heading %}posts{% endblock %}
 
+{% block content %}
+
+<!-- Posts  -->
+	{% for post in posts.object_list %}
+		{% if post.anonymous %}
+			\anonymous
+		{% else %}
+			\{{ post.username }}
+		{% endif %}
+		 [{{ post.created|date:"H:i d/m/y" }}]
+		<div class="post_body">{{ post.body|linebreaksbr }}
+		<div class="commentlink">&lt;comments&gt;</div></div>
+	{% endfor %}
+
+<!-- Next/Prev page links  -->
+{% if posts.object_list and posts.paginator.num_pages > 1 %}
+<div class="pagination" style="margin-top: 20px; text-align:center;padding-bottom:10px; ">
+	<span class="step-links">
+		{% if posts.has_previous %}
+			<a href= "?page={{ posts.previous_page_number }}"> &lt;&lt; newer entries</a>
+		{% endif %}
+
+		<!--<span class="current">
+			&nbsp;page {{ posts.number }} of {{ posts.paginator.num_pages }}
+		</span>-->
+
+                {% if posts.has_next %}
+                    <a href="?page={{ posts.next_page_number }}">older entries &gt;&gt; </a>
+                {% endif %}
+            </span>
+        </div>
+        {% endif %}
+
+
+
+
+{% endblock %}
+
 

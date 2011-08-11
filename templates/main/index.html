@@ -6,7 +6,6 @@
 {% block heading %}posts{% endblock %}
 
 {% block content %}
-
 <!-- Posts  -->
 	{% for post in posts.object_list %}
 		{% if post.anonymous %}
@@ -16,6 +15,9 @@
 		{% endif %}
 		 [{{ post.created|date:"H:i d/m/y" }}]
 		<div class="post_body">{{ post.body|linebreaksbr }}
+		{% if post.username == user.username %}
+		    <a href=" {% url main.views.edit post.pk %}">edit</a>
+        {% endif %}
 		<div class="commentlink">&lt;comments&gt;</div></div>
 	{% endfor %}
 

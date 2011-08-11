@@ -96,7 +96,10 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
 )
-
+TEMPLATE_CONTEXT_PROCESSORS = (
+	'context_processors.get_current_path',
+	'django.contrib.auth.context_processors.auth'
+)
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

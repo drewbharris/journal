@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+
+{% block title %}edit post | JOURNAL{% endblock %}
+
+{% block heading %}edit post{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+	{% if error %}
+	{{ error }}
+	{% endif %}
+	<form action="" method="post">
+		<!-- FOR NETWORK IMPLEMENTATION
+		<div class="field">
+        <div class="reg_field">
+        <label for="network">network:</label>
+        </div>
+        <select name="network">
+		<option value="main" selected="selected">main</option>
+		<option value="music">music</option>
+		<option value="anonymous">anonymous</option>
+		</select>
+		</div>-->
+		{{ body }}
+        <div class="field">
+        <div class="reg_field">
+        <label for="private">private:</label>
+        </div>
+        <input type="checkbox" name="private" 
+        {% if private %}
+        	CHECKED
+        {% endif %}
+        ></input>
+		</div>
+
+		<div class="field">
+        <div class="reg_field">
+        <label for="anonymous">anonymous:</label>
+        </div>
+        <input type="checkbox" name="anonymous" 
+        {% if anonymous %}
+        	CHECKED
+        {% endif %}
+        ></input>
+        </div>
+
+		<div class="field">
+        <div class="reg_field">
+        <label for="body">post:</label>
+        </div>
+        <textarea name="body">{{ body }}</textarea>
+        </div>
+
+        <input type="submit" value="submit">
+{% else %}
+	You are not allowed to edit this post.
+{% endif %}
+{% endblock %}
+

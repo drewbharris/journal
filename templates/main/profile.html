@@ -4,11 +4,42 @@
 {% block title %}you{% endblock %}
 
 {% block heading %}
-{{ user.username }}
+your posts
 {% endblock %}
 
 {% block content %}
-profile
+
+<!-- Posts  -->
+	{% for post in your_posts.object_list %}
+		{% if post.anonymous %}
+			\anonymous
+		{% else %}
+			\{{ post.username }}
+		{% endif %}
+		 [{{ post.created|date:"H:i d/m/y" }}]<br>
+		{% if post.username == user.username %}
+			<div style="margin-left:10px;">
+		    <a href=" {% url main.views.edit post.pk %}">edit</a>
+		    <a href=" {% url main.views.delete post.pk %}">delete</a>
+		    </div>
+        {% endif %}
+		<div class="post_body">{{ post.body|linebreaksbr }}
+		<div class="commentlink">&lt;comments&gt;</div></div>
+	{% endfor %}
+
+<!-- Next/Prev page links  -->
+{% if your_posts.object_list and your_posts.paginator.num_pages > 1 %}
+<div class="pagination" style="margin-top: 20px; text-align:center;padding-bottom:10px; ">
+	<span class="step-links">
+		{% if your_posts.has_previous %}
+			<a href= "?page={{ your_posts.previous_page_number }}"> &lt;&lt; newer entries</a>
+		{% endif %}
+        {% if your_posts.has_next %}
+            <a href="?page={{ your_posts.next_page_number }}">older entries &gt;&gt; </a>
+        {% endif %}
+            </span>
+        </div>
+        {% endif %}
 
 
 {% endblock %}

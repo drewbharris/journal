@@ -79,7 +79,7 @@ def login(request):
         return render_to_response('main/login.html', {}, context_instance=RequestContext(request))
         
 def profile(request):
-	your_posts = Post.objects.all().order_by("-created").filter(private=False)
+	your_posts = Post.objects.all().filter(username=request.user.username).order_by("-created")
 	paginator = Paginator(your_posts, 10)
 
 	try:
@@ -144,9 +144,9 @@ def edit(request, postpk):
 		post.save()
 		return HttpResponseRedirect("/")
 	else:
-		return render_to_response('main/edit.html', {}, context_instance=RequestContext(request))
+		return render_to_response('main/edit.html', {'anonymous':post.anonymous, 'private':post.private, 'body':post.body}, context_instance=RequestContext(request))
 
 
 def delete(request, postpk):
 	s = Post.objects.get(pk=postpk).delete()
-	return HttpResponseRedirect("/")
+	return HttpResponseRedirect('/you')

@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     (r'^you/change_password/$', 'main.views.change_password'),
     (r'^you/$', 'main.views.profile'),
     (r'^(\d+)/edit/$', 'main.views.edit'),
-    (r'^(\d+)/delete/$', 'main.views.delete'),
+    url(r'^(\d+)/delete/$', 'main.views.delete', name="delete"),
 	# Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

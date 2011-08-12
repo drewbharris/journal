@@ -9,16 +9,19 @@
 <!-- Posts  -->
 	{% for post in posts.object_list %}
 		{% if post.anonymous %}
-			\anonymous
-		{% else %}
-			\{{ post.username }}
-		{% endif %}
-		 [{{ post.created|date:"H:i d/m/y" }}]
-		<div class="post_body">{{ post.body|linebreaksbr }}
-		{% if post.username == user.username %}
-		    <a href=" {% url main.views.edit post.pk %}">edit</a>
+            \anonymous
+        {% else %}
+            \<a href="{% url main.views.profile post.username %}">{{ post.username }}</a>
         {% endif %}
-		<div class="commentlink">&lt;comments&gt;</div></div>
+         [{{ post.created|date:"H:i d/m/y" }}]<br>
+        {% if post.username == user.username %}
+            <div style="margin-left:10px;font-size:0.8em;">
+            <a href=" {% url main.views.edit post.pk %}?next={{ current_path|urlencode }}">edit</a>
+            <a href=" {% url main.views.delete post.pk %}?next={{ current_path|urlencode }}">delete</a>
+            </div>
+        {% endif %}
+        <div class="post_body">{{ post.body|linebreaksbr }}
+        <div class="commentlink">&lt;comments&gt;</div></div>
 	{% endfor %}
 
 <!-- Next/Prev page links  -->

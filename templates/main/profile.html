@@ -4,26 +4,44 @@
 {% block title %}you{% endblock %}
 
 {% block heading %}
-your posts
+{{ username }}
 {% endblock %}
 
 {% block content %}
-
+{% if user.username == username %}
+edit profile<br>
+{% endif %}
+<div class="profile_left">
+full name: {{ fullname }}<br>
+email: {{ email }}<br>
+city: {{ city }}<br>
+website: {{ website_url }}<br>
+facebook: {{ facebook_url }}<br>
+twitter: {{ twitter_url }}<br>
+</div>
+<div class="profile_right">
+image<br>
+{% if user.username == username %}
+<a href="{% url main.views.edit_profile user.username %}">
+edit profile
+</a>
+{% endif %}
+</div>
 <!-- Posts  -->
 	{% for post in your_posts.object_list %}
-		{% if post.private %}
-		<span style="color:blue;">private</span>
-		{% endif %}
 		{% if post.anonymous %}
 			\anonymous
 		{% else %}
 			\{{ post.username }}
 		{% endif %}
-		 [{{ post.created|date:"H:i d/m/y" }}]<br>
+		 [{{ post.created|date:"H:i d/m/y" }}]
+		 {% if post.private %}
+        <span style="color:blue;">private</span>
+        {% endif %}<br>
 		{% if post.username == user.username %}
 			<div style="margin-left:10px;font-size:0.8em;">
-		    <a href=" {% url main.views.edit post.pk %}">edit</a>
-		    <a href=" {% url main.views.delete post.pk %}">delete</a>
+		    <a href=" {% url main.views.edit post.pk %}?next={{ current_path|urlencode }}">edit</a>
+		    <a href=" {% url main.views.delete post.pk %}?next={{ current_path|urlencode }}">delete</a>
 		    </div>
         {% endif %}
 		<div class="post_body">{{ post.body|linebreaksbr }}

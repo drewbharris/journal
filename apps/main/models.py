@@ -20,8 +20,18 @@ class UserProfile(models.Model):
     facebook_url = models.CharField(max_length=40)
     twitter_url = models.CharField(max_length=40)
 
-#User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u) [0])
+class Profile(models.Model):
+	avatar = models.ImageField("profile_picture", upload_to="images/", blank=True, null=True)
+	city = models.CharField(max_length=20)
+	website_url = models.CharField(max_length=40)
+	facebook_url = models.CharField(max_length=40)
+	twitter_url = models.CharField(max_length=40)
+	user = models.ForeignKey(User, unique=True)
 
+	def __unicode__(self):
+		return unicode(self.user)
+
+User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
 
 # Admin

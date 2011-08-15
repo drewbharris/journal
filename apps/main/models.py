@@ -20,19 +20,21 @@ class UserProfile(models.Model):
     facebook_url = models.CharField(max_length=40)
     twitter_url = models.CharField(max_length=40)
 
-class Profile(models.Model):
-	avatar = models.ImageField("profile_picture", upload_to="images/", blank=True, null=True)
-	city = models.CharField(max_length=20)
-	website_url = models.CharField(max_length=40)
-	facebook_url = models.CharField(max_length=40)
-	twitter_url = models.CharField(max_length=40)
-	user = models.ForeignKey(User, unique=True)
+class ProfileImage(models.Model):
+	user = models.ForeignKey(User)
+	image = models.ImageField(upload_to='images/avatars/')
 
-	def __unicode__(self):
-		return unicode(self.user)
-
-User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
-
+class Comment(models.Model):
+	created = models.DateTimeField(auto_now_add=True)
+	author = models.CharField(max_length=60)
+	anonymous = models.BooleanField()
+	body = models.TextField()
+	post = models.ForeignKey(Post)
+	
+class PostImage(models.Model):
+	post = models.ForeignKey(Post)
+	image = models.ImageField(upload_to='images/posts/')
+	
 
 # Admin
 
@@ -40,5 +42,10 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ('created', 'username', 'anonymous', 'private', 'network' )
     fields = ["username", "anonymous", "private", "body", "network"]
 
+class CommentAdmin(admin.ModelAdmin):
+	list_display = ('author', 'post', 'created')
+	fields = ["author", "post", "body"]
+
 admin.site.register(Post, PostAdmin)
+admin.site.register(Comment, CommentAdmin)
 

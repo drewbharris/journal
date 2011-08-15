@@ -2,17 +2,7 @@
 <head>
 <title>{% block title %}{% endblock %}</title>
 <style type="text/css">
-a:link
-{
-	color:red;
-	text-decoration:none;
-}
-a:visited
-{
-	color:red;
-	text-decoration:none;
-}
-a:active
+a:link,a:visited,a:active
 {
 	color:red;
 	text-decoration:none;
@@ -23,6 +13,7 @@ a:hover
 	color:white;
 	text-decoration:none;
 }
+
 
 *
 {
@@ -65,13 +56,14 @@ a:hover
 {
 	width:350px;
 	float:left;
-	height:130px;
+	height:115px;
 }
 .profile_right
 {
 	width:350px;
 	float:right;
-	height:1130px;
+	height:115px;
+	text-align:center;
 }
 .commentlink
 {
@@ -90,7 +82,7 @@ a:hover
 		</div>
 		<a href="/">all posts</a>
 		{% if user.is_authenticated %}
-		<a href="/you">you</a>
+		<a href="/user/{{ user.username }}/">you</a>
 		<a href="/post">post</a>
 		<a href="/logout/">logout</a>
 		<!--<a href="/you/change_password">change password</a>-->

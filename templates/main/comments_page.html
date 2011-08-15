@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+
+{% block title %}journal{% endblock %}
+
+{% block heading %}posts{% endblock %}
+
+{% block content %}
+
+<!-- Post -->
+{% if post.anonymous %}
+\anonymous
+{% else %}
+\<span id="name_link"><a href="{% url main.views.profile post.username %}">{{ post.username }}</a></span>
+{% endif %}
+[{{ post.created|date:"H:i d/m/y" }}]<br>
+<div class="post_body">{{ post.body|linebreaksbr }}
+</div>
+<!-- end Post -->
+<p>
+comments
+<br>
+<!-- Comments -->
+	{% for comment in comments.object_list %}
+		{% if comment.anonymous %}
+            \anonymous
+        {% else %}
+            \<span id="name_link"><a href="{% url main.views.profile comment.author %}">{{ comment.author }}</a></span>
+        {% endif %}
+         [{{ comment.created|date:"H:i d/m/y" }}]<br>
+         {% if comment.author == user.username %}
+            <div style="margin-left:10px;font-size:0.8em;">
+            <a href=" {% url main.views.delete_comment post.pk comment.pk %}?next={{ current_path|urlencode }}">delete</a>
+            </div>
+        {% endif %}
+        <div class="post_body">{{ comment.body|linebreaksbr }}
+        </div>
+	{% endfor %}
+
+<!-- Next/Prev page links  -->
+{% if comments.object_list and comments.paginator.num_pages > 1 %}
+<div class="pagination" style="margin-top: 20px; text-align:center;padding-bottom:10px; ">
+	<span class="step-links">
+		{% if comments.has_previous %}
+			<a href= "?page={{ comments.previous_page_number }}"> &lt;&lt; newer entries</a>
+		{% endif %}
+
+		{% if comments.has_next %}
+			<a href="?page={{ comments.next_page_number }}">older entries &gt;&gt; </a>
+		{% endif %}
+		</span>
+        </div>
+        {% endif %}
+
+<!-- comment form -->
+{% if user.is_authenticated %}
+<form action="" method="post">
+
+		<div class="field">
+        <div class="reg_field">
+        <label for="anonymous">anonymous:</label>
+        </div>
+        <input type="checkbox" name="anonymous"></input>
+        </div>
+
+		<div class="field">
+        <div class="reg_field">
+        <label for="body">comment:</label>
+        </div>
+        <textarea name="body"></textarea>
+        </div>
+
+        <input type="submit" value="submit">
+{% else %}
+please login to leave a comment
+
+{% endif %}
+
+{% endblock %}
+
+

@@ -11,7 +11,7 @@
 		{% if post.anonymous %}
             \anonymous
         {% else %}
-            \<a href="{% url main.views.profile post.username %}">{{ post.username }}</a>
+            \<span id="name_link"><a href="{% url main.views.profile post.username %}">{{ post.username }}</a></span>
         {% endif %}
          [{{ post.created|date:"H:i d/m/y" }}]<br>
         {% if post.username == user.username %}
@@ -21,7 +21,7 @@
             </div>
         {% endif %}
         <div class="post_body">{{ post.body|linebreaksbr }}
-        <div class="commentlink">&lt;comments&gt;</div></div>
+        <div class="commentlink">&lt;<a href="{% url main.views.comments_page post.pk %}">comments</a>&gt;</div></div>
 	{% endfor %}
 
 <!-- Next/Prev page links  -->

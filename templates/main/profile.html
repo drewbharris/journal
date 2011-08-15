@@ -15,9 +15,15 @@ edit profile<br>
 full name: {{ fullname }}<br>
 email: {{ email }}<br>
 city: {{ city }}<br>
-website: {{ website_url }}<br>
-facebook: {{ facebook_url }}<br>
-twitter: {{ twitter_url }}<br>
+{% if website_url %}
+	<a href="{{ website_url }}">{{ website_url }}</a><br>
+{% endif %}
+{% if facebook_url %}
+	<a href="{{ facebook_url }}">facebook</a><br>
+{% endif %}
+{% if twitter_url %}
+	<a href="{{ twitter_url }}">twitter</a><br>
+{% endif %}
 </div>
 <div class="profile_right">
 image<br>
@@ -26,6 +32,9 @@ image<br>
 edit profile
 </a>
 {% endif %}
+</div>
+<div style="font-size:2em;margin-bottom:5px;">
+posts
 </div>
 <!-- Posts  -->
 	{% for post in your_posts.object_list %}

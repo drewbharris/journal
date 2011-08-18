@@ -8,9 +8,9 @@
 {% block content %}
 {% if user.is_authenticated %}
 	{% if error %}
-	{{ error }}
+	<div class="error_msg">{{ error }}</div>
 	{% endif %}
-	<form action="" method="post">
+	<form enctype="multipart/form-data" action="" method="post">
 		<!-- FOR NETWORK IMPLEMENTATION
 		<div class="field">
         <div class="reg_field">
@@ -42,6 +42,13 @@
         <label for="body">post:</label>
         </div>
         <textarea name="body"></textarea>
+        </div>
+
+		<div class="field">
+        <div class="reg_field">
+        <label for="image">image (optional):</label>
+        </div>
+        <input type="file" name="image"></input>
         </div>
 
         <input type="submit" value="submit">

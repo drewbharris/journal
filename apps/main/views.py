@@ -5,15 +5,55 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django import forms
+from django.forms import ModelForm
 from django.shortcuts import render_to_response
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
+from django.views.decorators.cache import never_cache
 
 from main.models import *
 
 from PIL import Image as PImage
-from os.path import join as pjoin
+from django.core.files.base import ContentFile
 import urllib2
+import os
+
+class ProfileForm(ModelForm):
+	class Meta:
+		model = ProfileImage
+		exclude = ["user"]
+
+class PostForm(ModelForm):
+	class Meta:
+		model = Post
+		exclude = ["user", "anonymous", "private", "body", "created", "network"]
+
+@never_cache
+def upload_avatar(request):
+	if request.user.is_authenticated():
+		try:
+			profile_image = ProfileImage.objects.get(user=request.user.pk)
+		except:
+			profile_image = ProfileImage(user=request.user)
+			profile_image.save()
+		if request.method == "POST":
+			pf = ProfileForm(request.POST, request.FILES, instance=profile_image)
+			if pf.is_valid():
+				pf.save()
+				imfn = '/home/dbharris/webapps/django2_static/'+profile_image.profile_image.name
+				imfn_new = '/home/dbharris/webapps/django2_static/images/avatars/'+request.user.username+'.jpg'
+				im = PImage.open(imfn)
+				im.thumbnail((160,160), PImage.ANTIALIAS)
+				im.save(imfn_new, "JPEG")
+				profile_image.profile_image.name = 'images/avatars/'+request.user.username+'.jpg'
+				profile_image.save()
+				os.remove(imfn)
+				return HttpResponseRedirect("/user/"+request.user.username+"/")
+		else:
+			pf = ProfileForm(instance=profile_image)
+			return render_to_response('main/profile_image.html', {'pf':pf, 'profile_image':profile_image}, context_instance=RequestContext(request))
+	else:
+		return HttpResponseRedirect("/login/")		
 
 def index(request):
 	posts = Post.objects.all().order_by("-created").filter(private=False)
@@ -35,28 +75,50 @@ def index(request):
 
 
 def post(request):
-	if request.method == 'POST':
-		username = request.user.username
-		try:
-			anonymous = request.POST['anonymous']
-		except:
-			anonymous = False
-		try:
-			private = request.POST['private']
-		except:
-			private = False
-		body = request.POST['body']
-		#network = request.POST['network']
-		network = 'main'
-		if not body:
-			return render_to_response('main/post.html', {'error': 'please enter a post'}, context_instance=RequestContext(request))
+	if request.user.is_authenticated():
+		if request.method == 'POST':
+			# initial post
+			username = request.user.username
+			try:
+				anonymous = request.POST['anonymous']
+			except:
+				anonymous = False
+			try:
+				private = request.POST['private']
+			except:
+				private = False
+			body = request.POST['body']
+			network = 'main'
+			if not body:
+				return render_to_response('main/post.html', {'error': 'please enter a post'}, context_instance=RequestContext(request))
+			else:
+				post = Post(username=username, anonymous=anonymous, private=private, body=body, network=network)
+			# save photo
+			if request.FILES.has_key('image'):
+				image_ext = os.path.splitext(request.FILES['image'].name)[1]
+				#return HttpResponseRedirect("/"+request.FILES['image'].content_type)
+				if request.FILES['image'].content_type not in 'image/jpeg image/png':
+					return render_to_response('main/post.html', {'error': 'this application only accepts .JPG and .PNG images'}, context_instance=RequestContext(request))
+				post.save()
+				if anonymous:
+					post.image.save('anonymous_'+str(post.pk)+image_ext, ContentFile(request.FILES['image'].read()))
+				else:
+					post.image.save(request.user.username+'_'+str(post.pk)+image_ext, ContentFile(request.FILES['image'].read()))
+				imfn = '/home/dbharris/webapps/django2_static/'+post.image.name
+				im = PImage.open(imfn)
+				im.resize((700,700), PImage.ANTIALIAS)
+				im.save(imfn)
+				post.save()
+			else:
+				post.save()
+			if private:
+				return HttpResponseRedirect("/user/"+request.user.username+"/")	
+			else:
+				return HttpResponseRedirect("/")
 		else:
-			post = Post(username=username, anonymous=anonymous, private=private, body=body, network=network)
-			post.save()
-			return HttpResponseRedirect("/user/"+request.user.username+"/")
+			return render_to_response('main/post.html', {}, context_instance=RequestContext(request))
 	else:
-		return render_to_response('main/post.html', {}, context_instance=RequestContext(request))
-		
+		return HttpResponseRedirect("/login")	
 		
 def comments_page(request, pk):
 	post = Post.objects.get(pk=pk)
@@ -110,7 +172,7 @@ def login(request):
     else:
         return render_to_response('main/login.html', {}, context_instance=RequestContext(request))
         
-        
+@never_cache
 def profile(request, username):
 	user = User.objects.get(username=username)
 	fullname = user.first_name + " " + user.last_name
@@ -119,6 +181,11 @@ def profile(request, username):
 		user_profile = UserProfile.objects.get(user=user.pk)
 	except UserProfile.DoesNotExist:
 		user_profile = UserProfile(user=user)
+		user_profile.save()
+	try:
+		profile_image = ProfileImage.objects.get(user=user.pk)
+	except ProfileImage.DoesNotExist:
+		profile_image = ProfileImage(user=user)
 		user_profile.save()
 	city = user_profile.city
 	website_url = user_profile.website_url
@@ -142,7 +209,7 @@ def profile(request, username):
 		your_posts = paginator.page(page)
 	except (InvalidPage, EmptyPage):
 		your_posts = paginator.page(paginator.num_pages)
-	return render_to_response("main/profile.html", {'username':user.username, 'fullname':fullname, 'email':email, 'city': city, 'website_url':website_url, 'facebook_url':facebook_url, 'twitter_url':twitter_url, 'your_posts':your_posts}, context_instance=RequestContext(request))
+	return render_to_response("main/profile.html", {'username':user.username, 'fullname':fullname, 'email':email, 'city': city, 'website_url':website_url, 'facebook_url':facebook_url, 'twitter_url':twitter_url, 'your_posts':your_posts, 'profile_image':profile_image}, context_instance=RequestContext(request))
     
     
 def edit_profile(request, username):
@@ -159,15 +226,6 @@ def edit_profile(request, username):
 	request_variables = ['first_name', 'last_name', 'email']
 	user_variables = ['city', 'website_url', 'facebook_url', 'twitter_url']
 	if request.method == 'POST':
-		try:
-			uploaded_image = request.FILES(['profile_image'])
-			image_exists = True
-		except:
-			image_exists = False
-			
-		if image_exists:
-			profile_image.image.save(uploaded_image.name, uploaded_image)
-			
 		for request_variable in request_variables:
 			x = getattr(request.user, request_variable)
 			if x:
@@ -261,7 +319,12 @@ def edit(request, postpk):
 
 def delete(request, postpk):
 	next_url = urllib2.unquote(request.GET.get('next'))
-	s = Post.objects.get(pk=postpk).delete()
+	s = Post.objects.get(pk=postpk)
+	try:
+		os.remove('/home/dbharris/webapps/django2_static/'+s.image.name)
+	except:
+		pass
+	s.delete()
 	return HttpResponseRedirect(next_url)
 	
 def delete_comment(request, postpk, commentpk):

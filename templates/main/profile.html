@@ -9,11 +9,12 @@
 
 {% block content %}
 {% if user.username == username %}
-edit profile<br>
+<a href="{% url main.views.edit_profile user.username %}">
+edit profile
+</a><br>
 {% endif %}
 <div class="profile_left">
 full name: {{ fullname }}<br>
-email: {{ email }}<br>
 city: {{ city }}<br>
 {% if website_url %}
 	<a href="{{ website_url }}">{{ website_url }}</a><br>
@@ -24,12 +25,15 @@ city: {{ city }}<br>
 {% if twitter_url %}
 	<a href="{{ twitter_url }}">twitter</a><br>
 {% endif %}
+{% if email %}
+    <a href="{{ email }}">email</a><br>
+{% endif %}
 </div>
 <div class="profile_right">
-image<br>
+<img src="/media/{{ profile_image.profile_image.name }}"><br>
 {% if user.username == username %}
-<a href="{% url main.views.edit_profile user.username %}">
-edit profile
+<a href="{% url main.views.upload_avatar %}">
+change image
 </a>
 {% endif %}
 </div>
@@ -54,7 +58,7 @@ posts
 		    </div>
         {% endif %}
 		<div class="post_body">{{ post.body|linebreaksbr }}
-		<div class="commentlink">&lt;comments&gt;</div></div>
+		<div class="commentlink">&lt;<a href="{% url main.views.comments_page post.pk %}">comments</a>&gt;</div></div>
 	{% endfor %}
 
 <!-- Next/Prev page links  -->

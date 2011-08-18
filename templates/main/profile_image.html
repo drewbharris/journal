@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+
+{% block title %}journal{% endblock %}
+
+{% block heading %}posts{% endblock %}
+
+{% block content %}
+
+<p>
+<form enctype="multipart/form-data" action="" method="POST">
+    {% csrf_token %}
+    {% if profile_image.profile_image %} <p><img border="0" src="/media/{{ profile_image.profile_image.name }}" /></p> {% endif %}
+
+    	<div class="field">
+        <div class="reg_field">
+        <label for="upload">upload:</label>
+        </div>
+        <input type="file" name="profile_image"></input>
+        </div>
+		<input type="submit" value="Submit" id="submit" />
+</form>
+</p>
+{% endblock %}
+
+

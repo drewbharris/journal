@@ -1,17 +1,19 @@
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django import forms
 
 class Post(models.Model):
-    username = models.CharField(max_length=20)
-    network = models.CharField(max_length=20)
-    anonymous = models.BooleanField()
-    private = models.BooleanField()
-    body = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
+	username = models.CharField(max_length=20)
+	network = models.CharField(max_length=20)
+	anonymous = models.BooleanField()
+	private = models.BooleanField()
+	body = models.TextField()
+	created = models.DateTimeField(auto_now_add=True)
+	image = models.ImageField(upload_to='images/posts/')
 
-    def __unicode__(self):
-        return self.username
+	def __unicode__(self):
+		return self.username
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
@@ -20,10 +22,6 @@ class UserProfile(models.Model):
     facebook_url = models.CharField(max_length=40)
     twitter_url = models.CharField(max_length=40)
 
-class ProfileImage(models.Model):
-	user = models.ForeignKey(User)
-	image = models.ImageField(upload_to='images/avatars/')
-
 class Comment(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	author = models.CharField(max_length=60)
@@ -31,10 +29,9 @@ class Comment(models.Model):
 	body = models.TextField()
 	post = models.ForeignKey(Post)
 	
-class PostImage(models.Model):
-	post = models.ForeignKey(Post)
-	image = models.ImageField(upload_to='images/posts/')
-	
+class ProfileImage(models.Model):
+	profile_image = models.ImageField(upload_to='images/avatars/')
+	user = models.ForeignKey(User)
 
 # Admin
 

@@ -9,14 +9,22 @@
 
 <!-- Post -->
 {% if post.anonymous %}
-\anonymous
-{% else %}
-\<span id="name_link"><a href="{% url main.views.profile post.username %}">{{ post.username }}</a></span>
-{% endif %}
-[{{ post.created|date:"H:i d/m/y" }}]<br>
-<div class="post_body">{{ post.body|linebreaksbr }}
-</div>
-<!-- end Post -->
+            \anonymous
+        {% else %}
+            \<span id="name_link"><a href="{% url main.views.profile post.username %}">{{ post.username }}</a></span>
+        {% endif %}
+         [{{ post.created|date:"H:i d/m/y" }}]<br>
+        {% if post.username == user.username %}
+            <div style="margin-left:10px;font-size:0.8em;">
+            <a href=" {% url main.views.edit post.pk %}?next={{ current_path|urlencode }}">edit</a>
+            <a href=" {% url main.views.delete post.pk %}?next={{ current_path|urlencode }}">delete</a>
+            </div>
+        {% endif %}
+        {% if post.image %}
+        <div class="post_image"><img src="/media/{{ post.image.name }}"></div>
+        {% endif %}
+        <div class="post_body">{{ post.body|linebreaksbr }}
+        <div class="commentlink">&lt;<a href="{% url main.views.comments_page post.pk %}">comments</a>&gt;</div></div><!-- end Post -->
 <p>
 comments
 <br>

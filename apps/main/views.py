@@ -89,10 +89,7 @@ def post(request):
 				private = False
 			body = request.POST['body']
 			network = 'main'
-			if not body:
-				return render_to_response('main/post.html', {'error': 'please enter a post'}, context_instance=RequestContext(request))
-			else:
-				post = Post(username=username, anonymous=anonymous, private=private, body=body, network=network)
+			post = Post(username=username, anonymous=anonymous, private=private, body=body, network=network)
 			# save photo
 			if request.FILES.has_key('image'):
 				image_ext = os.path.splitext(request.FILES['image'].name)[1]
@@ -106,7 +103,7 @@ def post(request):
 					post.image.save(request.user.username+'_'+str(post.pk)+image_ext, ContentFile(request.FILES['image'].read()))
 				imfn = '/home/dbharris/webapps/django2_static/'+post.image.name
 				im = PImage.open(imfn)
-				im.resize((700,700), PImage.ANTIALIAS)
+				im.thumbnail((700,1400), PImage.ANTIALIAS)
 				im.save(imfn)
 				post.save()
 			else:
@@ -138,7 +135,7 @@ def comments_page(request, pk):
 		if request.POST.has_key('body'):
 			comment = Comment(post=post, author=request.user.username, anonymous=False, body=request.POST['body'])
 			comment.save()
-			return HttpResponseRedirect("/"+pk+"/")	
+			return HttpResponseRedirect("/posts/"+pk+"/")	
 		else:
 			return render_to_response('main/comments_page.html', {'comments':comments, 'post':post, 'error': 'please enter a comment'}, context_instance=RequestContext(request))
 	else:

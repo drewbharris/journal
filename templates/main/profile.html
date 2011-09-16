@@ -30,10 +30,12 @@ city: {{ city }}<br>
 {% endif %}
 </div>
 <div class="profile_right">
+{% if profile_image.profile_image.name %}
 <img src="/media/{{ profile_image.profile_image.name }}"><br>
+{% endif %}
 {% if user.username == username %}
 <a href="{% url main.views.upload_avatar %}">
-change image
+<span style="margin-top:3px;font-size:0.8em;">change profile image</span>
 </a>
 {% endif %}
 </div>
@@ -61,7 +63,7 @@ posts
         <div class="post_image"><img src="/media/{{ post.image.name }}"></div>
         {% endif %}
 		<div class="post_body">{{ post.body|linebreaksbr }}
-		<div class="commentlink">&lt;<a href="{% url main.views.comments_page post.pk %}">comments</a>&gt;</div></div>
+		<div class="commentlink"><a href="{% url main.views.comments_page post.pk %}">comments</a></div></div>
 	{% endfor %}
 
 <!-- Next/Prev page links  -->

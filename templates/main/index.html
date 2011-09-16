@@ -23,8 +23,8 @@
 		{% if post.image %}
 		<div class="post_image"><img src="/media/{{ post.image.name }}"></div>
 		{% endif %}
-        <div class="post_body">{{ post.body|linebreaksbr }}
-        <div class="commentlink">&lt;<a href="{% url main.views.comments_page post.pk %}">comments</a>&gt;</div></div>
+        <div class="post_body">{{ post.body|linebreaksbr }}</div>
+        <div class="commentlink"><a href="{% url main.views.comments_page post.pk %}">comments</a></div>
 	{% endfor %}
 
 <!-- Next/Prev page links  -->

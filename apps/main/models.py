@@ -32,6 +32,10 @@ class Comment(models.Model):
 class ProfileImage(models.Model):
 	profile_image = models.ImageField(upload_to='images/avatars/')
 	user = models.ForeignKey(User)
+	
+class Ratings(models.Model):
+	rating = models.CharField(max_length=20)
+	post = models.ForeignKey(Post)
 
 # Admin
 

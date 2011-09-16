@@ -328,3 +328,6 @@ def delete_comment(request, postpk, commentpk):
 	next_url = urllib2.unquote(request.GET.get('next'))
 	s = Comment.objects.get(pk=commentpk).delete()
 	return HttpResponseRedirect(next_url)
+	
+def about(request):
+	return render_to_response("main/about.html", {})

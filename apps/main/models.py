@@ -11,6 +11,7 @@ class Post(models.Model):
 	body = models.TextField()
 	created = models.DateTimeField(auto_now_add=True)
 	image = models.ImageField(upload_to='images/posts/')
+	audio = models.CharField(max_length=100)
 
 	def __unicode__(self):
 		return self.username
@@ -33,10 +34,6 @@ class ProfileImage(models.Model):
 	profile_image = models.ImageField(upload_to='images/avatars/')
 	user = models.ForeignKey(User)
 	
-class Ratings(models.Model):
-	rating = models.CharField(max_length=20)
-	post = models.ForeignKey(Post)
-
 # Admin
 
 class PostAdmin(admin.ModelAdmin):

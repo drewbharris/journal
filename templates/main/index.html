@@ -9,9 +9,9 @@
 <!-- Posts  -->
 	{% for post in posts.object_list %}
 		{% if post.anonymous %}
-            \anonymous
+            \ anonymous
         {% else %}
-            \<span id="name_link"><a href="{% url main.views.profile post.username %}">{{ post.username }}</a></span>
+            \ <span id="name_link"><a href="{% url main.views.profile post.username %}">{{ post.username }}</a></span>
         {% endif %}
          [{{ post.created|date:"H:i d/m/y" }}]<br>
         {% if post.username == user.username %}
@@ -20,10 +20,18 @@
             <a href=" {% url main.views.delete post.pk %}?next={{ current_path|urlencode }}">delete</a>
             </div>
         {% endif %}
+        {% if post.audio %}
+        <div style="padding-top:5px;">
+        <audio controls="controls">
+        	<source src="{{ post.audio }}" type="audio/mp3">
+        	<span style="font-size:0.5em;color:red;">use a newer browser that supports html5 audio please</span>
+        </audio>
+        </div>
+        {% endif %}
+        <div class="post_body">{{ post.body|linebreaksbr }}</div>
 		{% if post.image %}
 		<div class="post_image"><img src="/media/{{ post.image.name }}"></div>
 		{% endif %}
-        <div class="post_body">{{ post.body|linebreaksbr }}</div>
         <div class="commentlink"><a href="{% url main.views.comments_page post.pk %}">comments</a></div>
 	{% endfor %}
 

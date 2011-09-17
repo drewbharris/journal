@@ -26,7 +26,7 @@ city: {{ city }}<br>
 	<a href="{{ twitter_url }}">twitter</a><br>
 {% endif %}
 {% if email %}
-    <a href="{{ email }}">email</a><br>
+    <a href="mailto:{{ email }}">email</a><br>
 {% endif %}
 </div>
 <div class="profile_right">
@@ -45,9 +45,9 @@ posts
 <!-- Posts  -->
 	{% for post in your_posts.object_list %}
 		{% if post.anonymous %}
-			\anonymous
+			\ anonymous
 		{% else %}
-			\{{ post.username }}
+			\ {{ post.username }}
 		{% endif %}
 		 [{{ post.created|date:"H:i d/m/y" }}]
 		 {% if post.private %}

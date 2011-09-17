@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm, SetP
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+
 from django import forms
 from django.forms import ModelForm
 from django.shortcuts import render_to_response
@@ -43,7 +44,7 @@ def upload_avatar(request):
 				imfn = '/home/dbharris/webapps/django2_static/'+profile_image.profile_image.name
 				imfn_new = '/home/dbharris/webapps/django2_static/images/avatars/'+request.user.username+'.jpg'
 				im = PImage.open(imfn)
-				im.thumbnail((160,160), PImage.ANTIALIAS)
+				im.thumbnail((200,200), PImage.ANTIALIAS)
 				im.save(imfn_new, "JPEG")
 				profile_image.profile_image.name = 'images/avatars/'+request.user.username+'.jpg'
 				profile_image.save()
@@ -89,7 +90,11 @@ def post(request):
 				private = False
 			body = request.POST['body']
 			network = 'main'
-			post = Post(username=username, anonymous=anonymous, private=private, body=body, network=network)
+			if request.POST.has_key('audio'):
+				audio = request.POST['audio']
+				post = Post(username=username, anonymous=anonymous, private=private, body=body, network=network, audio=audio)
+			else:
+				post = Post(username=username, anonymous=anonymous, private=private, body=body, network=network)
 			# save photo
 			if request.FILES.has_key('image'):
 				image_ext = os.path.splitext(request.FILES['image'].name)[1]
@@ -154,21 +159,41 @@ def register(request):
     
     
 def login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                auth_login(request, user)
-                return HttpResponseRedirect("/user/"+request.user.username+"/")
-            else:
-                return render_to_response('main/login.html', {'error': 'your account has been disabled.'}, context_instance=RequestContext(request))
-        else:
-            return render_to_response('main/login.html', {'error': 'invalid login - please try again.'}, context_instance=RequestContext(request))
-    else:
-        return render_to_response('main/login.html', {}, context_instance=RequestContext(request))
-        
+		if request.method == 'POST':
+			username = request.POST['username']
+			password = request.POST['password']
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				if user.is_active:
+					auth_login(request, user)
+					return HttpResponseRedirect("/user/"+request.user.username+"/")
+				else:
+					return render_to_response('main/login.html', {'error': 'your account has been disabled.'}, context_instance=RequestContext(request))
+			else:
+				return render_to_response('main/login.html', {'error': 'invalid login - please try again.'}, context_instance=RequestContext(request))
+		else:
+			return render_to_response('main/login.html', {}, context_instance=RequestContext(request))
+
+def change_password(request):
+	if request.method == 'POST':
+		current_password = request.POST['current_password']
+		new_password1 = request.POST['new_password1']
+		new_password2 = request.POST['new_password2']
+		username = request.user.username
+		if request.user.check_password(current_password):
+			if new_password1 == new_password2:
+				request.user.set_password(new_password1)
+				request.user.save()
+				auth_logout(request)
+				return HttpResponseRedirect("/login/")
+			else:
+				return render_to_response('main/change_password.html', {'error': 'passwords don\'t match - please try again.'}, context_instance=RequestContext(request))
+		else:
+			return render_to_response('main/change_password.html', {'error': 'invalid password - please try again.'}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('main/change_password.html', {}, context_instance=RequestContext(request))
+		
+
 @never_cache
 def profile(request, username):
 	user = User.objects.get(username=username)
@@ -267,17 +292,6 @@ def logout(request):
         return render_to_response("main/logout.html", {'message': 'you have been successfully logged out.'}, context_instance=RequestContext(request))
     else:
         return render_to_response("main/logout.html", {'error': 'you haven\'t logged in yet.'}, context_instance=RequestContext(request))
-        
-        
-def change_password(request):
-    if request.method == 'POST':
-        form = PasswordChangeForm(SetPasswordForm(request.POST))
-        if form.is_valid():
-            #new_user = form.save()
-            return HttpResponseRedirect("/login/")
-    else:
-        form = PasswordChangeForm()
-    return render_to_response("main/change_password.html", {'form': form,}, context_instance=RequestContext(request))
  
     
 def edit(request, postpk):
@@ -330,4 +344,4 @@ def delete_comment(request, postpk, commentpk):
 	return HttpResponseRedirect(next_url)
 	
 def about(request):
-	return render_to_response("main/about.html", {})
+	return render_to_response("main/about.html", {}, context_instance=RequestContext(request))

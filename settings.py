@@ -55,7 +55,7 @@ MEDIA_ROOT = '/home/dbharris/webapps/django2_static/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = 'http://django2.distorteddisco.com/media/'
+MEDIA_URL = 'http://weaimforauthentic.com/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -70,7 +70,7 @@ STATIC_URL = '/static/'
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = 'http://django2.distorteddisco.com/media/admin/'
+ADMIN_MEDIA_PREFIX = 'http://weaimforauthentic.com/media/admin/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -160,8 +160,8 @@ LOGGING = {
 EMAIL_HOST = 'smtp.webfaction.com'
 EMAIL_HOST_USER = 'dbharris_mail'
 EMAIL_HOST_PASSWORD = 'grmny54grmny'
-DEFAULT_FROM_EMAIL = 'contact@django2.distorteddisco.com'
-SERVER_EMAIL = 'contact@django2.distorteddisco.com'
+DEFAULT_FROM_EMAIL = 'contact@weaimforauthentic.com'
+SERVER_EMAIL = 'contact@weaimforauthentic.com'
 
 
 AUTH_PROFILE_MODULE = 'main.UserProfile'

@@ -49,12 +49,12 @@ def upload_avatar(request):
 				profile_image.profile_image.name = 'images/avatars/'+request.user.username+'.jpg'
 				profile_image.save()
 				os.remove(imfn)
-				return HttpResponseRedirect("/user/"+request.user.username+"/")
+				return HttpResponseRedirect("/journal/user/"+request.user.username+"/")
 		else:
 			pf = ProfileForm(instance=profile_image)
 			return render_to_response('main/profile_image.html', {'pf':pf, 'profile_image':profile_image}, context_instance=RequestContext(request))
 	else:
-		return HttpResponseRedirect("/login/")		
+		return HttpResponseRedirect("/journal/login/")		
 
 def index(request):
 	posts = Post.objects.all().order_by("-created").filter(private=False)
@@ -114,13 +114,13 @@ def post(request):
 			else:
 				post.save()
 			if private:
-				return HttpResponseRedirect("/user/"+request.user.username+"/")	
+				return HttpResponseRedirect("/journal/user/"+request.user.username+"/")	
 			else:
-				return HttpResponseRedirect("/")
+				return HttpResponseRedirect("/journal/")
 		else:
 			return render_to_response('main/post.html', {}, context_instance=RequestContext(request))
 	else:
-		return HttpResponseRedirect("/login")	
+		return HttpResponseRedirect("/journal/login/")	
 		
 def comments_page(request, pk):
 	post = Post.objects.get(pk=pk)
@@ -140,7 +140,7 @@ def comments_page(request, pk):
 		if request.POST.has_key('body'):
 			comment = Comment(post=post, author=request.user.username, anonymous=False, body=request.POST['body'])
 			comment.save()
-			return HttpResponseRedirect("/posts/"+pk+"/")	
+			return HttpResponseRedirect("/journal/posts/"+pk+"/")	
 		else:
 			return render_to_response('main/comments_page.html', {'comments':comments, 'post':post, 'error': 'please enter a comment'}, context_instance=RequestContext(request))
 	else:
@@ -152,7 +152,7 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             new_user = form.save()
-            return HttpResponseRedirect("/login/")
+            return HttpResponseRedirect("/journal/login/")
     else:
         form = UserCreationForm()
     return render_to_response("main/registration.html", {'form': form,}, context_instance=RequestContext(request))
@@ -166,7 +166,7 @@ def login(request):
 			if user is not None:
 				if user.is_active:
 					auth_login(request, user)
-					return HttpResponseRedirect("/user/"+request.user.username+"/")
+					return HttpResponseRedirect("/journal/user/"+request.user.username+"/")
 				else:
 					return render_to_response('main/login.html', {'error': 'your account has been disabled.'}, context_instance=RequestContext(request))
 			else:
@@ -185,7 +185,7 @@ def change_password(request):
 				request.user.set_password(new_password1)
 				request.user.save()
 				auth_logout(request)
-				return HttpResponseRedirect("/login/")
+				return HttpResponseRedirect("/journal/login/")
 			else:
 				return render_to_response('main/change_password.html', {'error': 'passwords don\'t match - please try again.'}, context_instance=RequestContext(request))
 		else:
@@ -217,7 +217,7 @@ def profile(request, username):
 		if user.pk == request.user.pk:
 			your_posts = Post.objects.all().filter(username=user.username).order_by("-created")
 		else:
-			your_posts = Post.objects.all().filter(username=user.username).order_by("-created").filter(private=False)
+			your_posts = Post.objects.all().filter(username=user.username).order_by("-created").filter(private=False).filter(anonymous=False)
 	except:
 		your_posts = Post.objects.all().filter(username=user.username).order_by("-created").filter(private=False)
 	paginator = Paginator(your_posts, 10)
@@ -278,7 +278,7 @@ def edit_profile(request, username):
 					pass
 		request.user.save()
 		user_profile.save()
-		return HttpResponseRedirect("/user/"+request.user.username+"/")
+		return HttpResponseRedirect("/journal/user/"+request.user.username+"/")
 	else:
 		variables = request_variables + user_variables
 		values = [request.user.first_name, request.user.last_name, request.user.email, user_profile.city, user_profile.website_url, user_profile.facebook_url, user_profile.twitter_url]
@@ -321,11 +321,31 @@ def edit(request, postpk):
 		try:
 			post.body = request.POST['body']
 		except:
-			return render_to_response('main/edit.html', {'error': 'please enter a post'}, context_instance=RequestContext(request))
-		post.save()
+			pass
+		if request.POST.has_key('audio'):
+			audio = request.POST['audio']
+			post.audio = audio
+		# save photo
+		if request.FILES.has_key('image'):
+			image_ext = os.path.splitext(request.FILES['image'].name)[1]
+			#return HttpResponseRedirect("/"+request.FILES['image'].content_type)
+			if request.FILES['image'].content_type not in 'image/jpeg image/png':
+				return render_to_response('main/edit.html', {'error': 'this application only accepts .JPG and .PNG images', 'anonymous':post.anonymous, 'private':post.private, 'body':post.body, 'audio':post.audio, 'image':post.image.name}, context_instance=RequestContext(request))
+			post.save()
+			if post.anonymous:
+				post.image.save('anonymous_'+str(post.pk)+image_ext, ContentFile(request.FILES['image'].read()))
+			else:
+				post.image.save(request.user.username+'_'+str(post.pk)+image_ext, ContentFile(request.FILES['image'].read()))
+			imfn = '/home/dbharris/webapps/django2_static/'+post.image.name
+			im = PImage.open(imfn)
+			im.thumbnail((700,1400), PImage.ANTIALIAS)
+			im.save(imfn)
+			post.save()
+		else:
+			post.save()
 		return HttpResponseRedirect(next_url)
 	else:
-		return render_to_response('main/edit.html', {'anonymous':post.anonymous, 'private':post.private, 'body':post.body}, context_instance=RequestContext(request))
+		return render_to_response('main/edit.html', {'anonymous':post.anonymous, 'private':post.private, 'body':post.body, 'audio':post.audio, 'image':post.image.name}, context_instance=RequestContext(request))
 		
 
 def delete(request, postpk):

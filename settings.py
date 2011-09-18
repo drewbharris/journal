@@ -32,7 +32,7 @@ DATABASES = {
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'America/Vancouver'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -55,7 +55,7 @@ MEDIA_ROOT = '/home/dbharris/webapps/django2_static/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = 'http://weaimforauthentic.com/media/'
+MEDIA_URL = 'http://weaimforauthentic.com/journal/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -70,7 +70,7 @@ STATIC_URL = '/static/'
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = 'http://weaimforauthentic.com/media/admin/'
+ADMIN_MEDIA_PREFIX = 'http://weaimforauthentic.com/journal/media/admin/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (

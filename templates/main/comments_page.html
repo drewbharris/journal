@@ -16,15 +16,20 @@
          [{{ post.created|date:"H:i d/m/y" }}]<br>
         {% if post.username == user.username %}
             <div style="margin-left:10px;font-size:0.8em;">
-            <a href=" {% url main.views.edit post.pk %}?next={{ current_path|urlencode }}">edit</a>
-            <a href=" {% url main.views.delete post.pk %}?next=/">delete</a>
+            <a href="http://weaimforauthentic.com/journal/posts/{{ post.pk }}/edit/?next=/journal{{ current_path|urlencode }}">edit</a>
+            <a href="http://weaimforauthentic.com/journal/posts/{{ post.pk }}/delete/?next=/journal/">delete</a>
             </div>
+            
         {% endif %}
+        <div class="post_body">
+        {% autoescape off %}
+        {{ post.body|linebreaksbr|urlize }}
+        {% endautoescape %}
+        </div>
         {% if post.image %}
-        <div class="post_image"><img src="/media/{{ post.image.name }}"></div>
+        <div class="post_image"><img src="/journal/media/{{ post.image.name }}"></div>
         {% endif %}
-        <div class="post_body">{{ post.body|linebreaksbr }}
-        </div><!-- end Post -->
+        <!-- end Post -->
 <div style="font-size:1.3em;">
 comments
 </div>
@@ -34,12 +39,12 @@ comments
 		{% if comment.anonymous %}
             \anonymous
         {% else %}
-            \<span id="name_link"><a href="{% url main.views.profile comment.author %}">{{ comment.author }}</a></span>
+            \<span id="name_link"><a href="http://weaimforauthentic.com/journal/user/{{ comment.author }}/">{{ comment.author }}</a></span>
         {% endif %}
          [{{ comment.created|date:"H:i d/m/y" }}]<br>
          {% if comment.author == user.username %}
             <div style="margin-left:10px;font-size:0.8em;">
-            <a href=" {% url main.views.delete_comment post.pk comment.pk %}?next={{ current_path|urlencode }}">delete</a>
+            <a href="http://weaimforauthentic.com/journal/posts/{{ post.pk }}/comments/{{ comment.pk }}/delete/?next=/journal{{ current_path|urlencode }}">delete</a>
             </div>
         {% endif %}
         <div class="post_body">{{ comment.body|linebreaksbr }}

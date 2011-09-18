@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 
-{% block title %}create post | JOURNAL{% endblock %}
+{% block title %}create_post | journal{% endblock %}
 
-{% block heading %}create post{% endblock %}
+{% block heading %}create_post{% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
@@ -41,7 +41,7 @@
         <div class="reg_field">
         <label for="body">post:</label>
         </div>
-        <textarea name="body"></textarea>
+        <textarea name="body" rows="10" cols="50"></textarea>
         </div>
 
 		<div class="field">
@@ -51,14 +51,15 @@
         <input type="file" name="image"></input>
         </div>
         
-        <div class="field">
+        <!--<div class="field">
         <div class="reg_field">
         <label for="audio">mp3 url (optional):</label>
         </div>
         <input type="text" name="audio"></input>
-        </div>
+        </div>-->
+        posts may include embedded html
 
-        <input type="submit" value="submit">
+        <div style="text-align:center;padding-top:20px;"><input type="submit" value="submit"></div>
 {% else %}
 	Please log in before posting.
 {% endif %}

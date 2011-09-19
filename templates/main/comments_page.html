@@ -11,7 +11,7 @@
 {% if post.anonymous %}
             \ anonymous
         {% else %}
-            \ <span id="name_link"><a href="{% url main.views.profile post.username %}">{{ post.username }}</a></span>
+            \ <span id="name_link"><a href="http://weaimforauthentic.com/journal/user/{{ post.username }}/">{{ post.username }}</a></span>
         {% endif %}
          [{{ post.created|date:"H:i d/m/y" }}]<br>
         {% if post.username == user.username %}
@@ -30,16 +30,16 @@
         <div class="post_image"><img src="/journal/media/{{ post.image.name }}"></div>
         {% endif %}
         <!-- end Post -->
-<div style="font-size:1.3em;">
+<div style="font-size:1.3em;padding-top:15px;">
 comments
 </div>
 ----------------------<br>
 <!-- Comments -->
 	{% for comment in comments.object_list %}
 		{% if comment.anonymous %}
-            \anonymous
+            \ anonymous
         {% else %}
-            \<span id="name_link"><a href="http://weaimforauthentic.com/journal/user/{{ comment.author }}/">{{ comment.author }}</a></span>
+            \ <span id="name_link"><a href="http://weaimforauthentic.com/journal/user/{{ comment.author }}/">{{ comment.author }}</a></span>
         {% endif %}
          [{{ comment.created|date:"H:i d/m/y" }}]<br>
          {% if comment.author == user.username %}

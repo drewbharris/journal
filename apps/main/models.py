@@ -12,6 +12,7 @@ class Post(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	image = models.ImageField(upload_to='images/posts/')
 	audio = models.CharField(max_length=100)
+	comments = models.IntegerField(default="0")
 
 	def __unicode__(self):
 		return self.username

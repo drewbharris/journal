@@ -140,7 +140,12 @@ def comments_page(request, pk):
 		if request.POST.has_key('body'):
 			comment = Comment(post=post, author=request.user.username, anonymous=False, body=request.POST['body'])
 			comment.save()
-			return HttpResponseRedirect("/journal/posts/"+pk+"/")	
+			if not post.comments:
+				post.comments = 1
+			else:
+				post.comments = post.comments + 1
+			post.save()
+			return HttpResponseRedirect("/journal/posts/"+pk+"/")
 		else:
 			return render_to_response('main/comments_page.html', {'comments':comments, 'post':post, 'error': 'please enter a comment'}, context_instance=RequestContext(request))
 	else:
@@ -361,6 +366,9 @@ def delete(request, postpk):
 def delete_comment(request, postpk, commentpk):
 	next_url = urllib2.unquote(request.GET.get('next'))
 	s = Comment.objects.get(pk=commentpk).delete()
+	post = Post.objects.get(pk=postpk)
+	post.comments = post.comments - 1
+	post.save()
 	return HttpResponseRedirect(next_url)
 	
 def about(request):

@@ -79,7 +79,11 @@ posts
 		{% if post.image %}
 		<div class="post_image"><img src="/journal/media/{{ post.image.name }}"></div>
 		{% endif %}
-        <div class="commentlink"><a href="http://weaimforauthentic.com/journal/posts/{{ post.pk }}/">comments</a></div>
+        <div class="commentlink"><a href="http://weaimforauthentic.com/journal/posts/{{ post.pk }}/">
+        comments 
+        {% if post.comments %} 
+        ({{ post.comments }})
+        {% endif %}</a></div>
         
 	{% endfor %}
 
